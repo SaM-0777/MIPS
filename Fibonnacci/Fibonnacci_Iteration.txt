@@ -1,0 +1,100 @@
+# Name : Soumya Ranjan Sahu
+# Roll No : 20BCS126
+
+# Code Description : Fibonnacci Number by Iteration Method
+#                    Input : 10
+#                    Output : 34, 55 (Nth and N+1th Fibonnacci Number)
+# Step - 1 : Print Msg1
+# Step - 2 : Accept Input from User
+# Step - 3 : Print Msg4
+# Step - 4 : Call the Sub-Routine Fibonnacci
+# Fibonnacci Sub-Routine : Arguments is N stored in Rsgister $a1
+#                          Initialize the required Registers
+#                          loop1 will Calculate the Nth Fibonnacci Number and will store it in $v1 Register
+#                          loop2 wiil Calculate the N+1th Fibonnacci Number and will store it in $v1 Register
+# Step - 5 : Safely Exit the Program                         
+
+
+
+
+.data
+Msg1: .asciiz "Enter a Number N : "
+Msg2: .asciiz "\nNth Fibonnacci Number : "
+Msg3: .asciiz "\nN+1th Fibonnacci Number : "
+Msg4: .asciiz "\nFirst Fibonnacci Number : 0"
+
+
+.text
+.globl main
+
+main:
+
+    # Print Msg1
+    li $v0, 4
+    la $a0, Msg1
+    syscall
+
+    # Accept User Input
+    li $v0, 5
+    syscall
+    move $a1, $v0
+
+    # Print Msg4
+    li $v0, 4
+    la $a0, Msg4
+    syscall
+
+    # Call the Fibonnacci Sub-Routine
+    jal Fibonnacci
+
+    # Safe Exit the Program
+    li $v0, 10
+    syscall
+
+
+Fibonnacci:
+
+    # Initialize the Registers
+    li $t0, 2   # Counter is Initialized to 2 because we are Calculating Fibonnacci Number after the 2nd Fibonnacci Number
+    li $t1, 0   # First Fibonnacci Number
+    li $t2, 1   # Second Fibonnacci Number
+    li $v1, 0   # Function return value
+
+    loop1:
+        beq $t0, $a1, loop2
+        add $v1, $t2, $t1       # Calculate the Next Fibonnacci Number and store it on $v1
+        add $t1, $t2, $zero     # Copy the content of $t2 to $t1
+        add $t2, $v1, $zero     # Copy the content of $v1 to $t2
+        addi $t0, $t0, 1        # Increment the Counter
+        j loop1
+    
+    loop2:
+
+        # Print Msg2
+        li $v0, 4
+        la $a0, Msg2
+        syscall
+
+        # Print the Nth Fibonnacci Number
+        li $v0, 1
+        move $a0, $v1
+        syscall
+
+        add $v1, $v1, $t1   # Calculate and store the N+1th Fibonnacci Number in $v1
+
+        # Print Msg3
+        li $v0, 4
+        la $a0, Msg3
+        syscall
+
+        # Print the N+1th Fibonnacci Number
+        li $v0, 1
+        move $a0, $v1
+        syscall
+
+        j end
+    
+    end:
+        jr $ra
+
+    

@@ -1,0 +1,19 @@
+# Simple example of reading operands from memory and writing back
+# to a reserve space in memory
+
+.data
+L1: .word 0x2345	# Some arbitrary value
+L2: .word 0x33667	# Some arbitrary value
+Res: .space 4
+
+.text
+.globl main
+
+main: lw $t0, L1($0)	# Load the first value
+      	     lw $t1, L2($0)	# Load the second value
+             and $t2, $t0, $t1	# Bit by Bit AND operation
+             or $t3, $t0, $t1		# Bit by Bit OR operation
+             sw $t3, Res($0)		# Store at Reserve location in memory
+
+             li $v0, 10		# Code for Program end
+             syscall

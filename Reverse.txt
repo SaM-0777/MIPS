@@ -1,0 +1,57 @@
+# Name : Soumya Ranjan Sahu
+# Roll Number : 20BCS126
+
+# MIPS Assembly Program to Reverse a Given String
+
+.data
+Msg1: .asciiz "Original String : "
+Msg2: .asciiz "\n\nReverse String : "
+string: .asciiz "Computer Architecture"
+
+.text
+.globl main
+
+main:
+    
+    # Print Msg1 on console
+    li $v0, 4
+    la $a0, Msg1
+    syscall
+
+    # Print string on console
+    li $v0, 4
+    la $a0, string
+    syscall
+
+    # Print Msg2 on console
+    li $v0, 4
+    la $a0, Msg2
+    syscall
+
+    # Load starting Address of string
+    la $t0, string  # First address of string
+
+    li $t1, 0
+    li $t2, 0
+    li $t3, 0
+
+    # Loop to get the last Address of string
+
+loop:
+    add $t2, $t0, $t1
+    lb $t3, 0($t2)
+    beqz $t3, Exit
+    addi $t1, $t1, 1
+    j loop
+
+
+    
+
+# Exit the Program
+Exit:
+    li $v0, 4
+    move $a0, $t3
+    syscall
+
+    #li $v0, 10
+    #syscall

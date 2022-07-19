@@ -1,0 +1,78 @@
+# Name : Soumya Ranjan Sahu
+# Roll No : 20BCS126
+
+# Code Description : String is "ComputerArchitecture"
+#                    Reverse String is (Output) : "erutcetihcrAretupmoC"
+# Step 1 : Print Msg1
+# Step 2 : Print Msg2
+# step 3 : load string Address in register t0
+# step 4 : t1 register will calculate the string length and t2 register will read the data in Memory Address for branch comparison
+# step 5 : loop is created to traverse to the end of the string
+# step 6 : set_pointer will set the address of last value in t0 register
+# step 7 : reverse_str is to trverse the string from last character to first character and print the value in that Address one by one
+# step 8 : Exit the Program
+
+
+
+
+
+.data
+string: .asciiz "ComputerArchitecture"
+Msg1: .asciiz "Original String : "
+Msg2: .asciiz "\nReverse String : "
+
+.text
+.globl main
+
+main:
+
+    # Print Msg1
+    li $v0, 4
+    la $a0, Msg1
+    syscall
+
+    # Print String
+    li $v0, 4
+    la $a0, string
+    syscall
+
+    # Print Msg2
+    li $v0, 4
+    la $a0, Msg2
+    syscall
+
+    # Load the Base Address of String in t0
+    la $t0, string
+
+    
+    li $t1, 0   # t1 will be string length
+
+    li $t2, 0   # t2 will hold the value for comparison
+
+
+loop:
+    lb $t2, 0($t0)
+    addi $t0, $t0, 1
+    beq $t2, $zero, set_pointer
+    addi $t1, $t1, 1
+    jal loop
+
+set_pointer:
+    sub $t0, $t0, 2    # t0 pointing to last character
+    j reverse_str
+
+reverse_str:
+    lb $t3, ($t0)
+    # Print 1 character
+    li $v0, 11
+    move $a0, $t3
+    syscall
+    sub $t0, $t0, 1
+    sub $t1, $t1, 1
+    beq $t1, $zero, Exit
+    jal reverse_str
+
+Exit:
+    li $v0, 10
+    syscall
+ 

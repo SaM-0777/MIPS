@@ -1,0 +1,31 @@
+.data
+Array: .word 1, 2, 3, 4, 5
+Msg1: .asciiz "Array : "
+
+.text
+.globl main
+
+main:
+    
+    # Intialize the Arguments for the Subroutine
+    la $a0, Array
+    li $a1, 5
+
+    addiu $sp, $sp, -4
+    sw $ra, ($sp)
+    jal sum
+    lw $ra, ($sp)
+    addiu $sp, $sp, 4
+
+    jr $ra
+
+sum:
+    move $t0, $a0
+    move $t1, $a1
+    
+    li $v0, 4
+    $a0, Msg1
+    syscall
+
+    
+

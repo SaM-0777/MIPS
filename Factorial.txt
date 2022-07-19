@@ -1,0 +1,49 @@
+# Program to find Factorial
+
+.data	# Data Declaration section
+prompint: .asciiz "Enter a Number:"
+answer: .asciiz "Factorial is :"
+answer1: .asciiz "X"
+
+.text
+.globl main
+
+main: 
+		addi $v0, $0, 4
+      	la $a0, prompint
+      	syscall
+
+#giving Numbers
+addi $v0, $0, 5
+syscall
+
+move $s1, $v0
+
+addi $v0, $0, 1
+add $a0, $s1, $zero
+syscall
+
+addi $t0, $s1, 0	#input N
+
+addi $t1, $0, 1	# t1 is counter
+addi $t2, $0, 1	# t2 holds result
+
+jal fact	# jump and link
+
+#show result
+addi $v0, $0, 4
+la $a0, answer
+syscall
+
+# exit
+addi $v0, $0, 10
+syscall
+
+fact:
+	loop:
+		bgt $t1, $t0, end	#loop condition t1 == t2 end loop
+		mul $t2, $t2, $t1	# Factorial operation
+		add $t1, $t1, 1		# count Increment
+	j loop
+end:
+jr $ra

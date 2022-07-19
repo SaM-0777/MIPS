@@ -1,0 +1,17 @@
+.text
+.globl main
+
+main:
+    li $t1, 2
+    li $t2, 3
+    li $t3, 2
+
+    slt $t5, $t1, $t2   # if ($t1 < $t2)
+    slt $t6, $t1, $t3   # if ($t1 < $t3)
+
+    li $t4, 50
+
+    slti $t7, $t4, 100
+
+    li $v0, 10
+    syscall

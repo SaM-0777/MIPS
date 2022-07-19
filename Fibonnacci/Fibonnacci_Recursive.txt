@@ -1,0 +1,97 @@
+# Name : Soumya Ranjan Sahu
+# Roll No : 20BCS126
+
+# Code Description : 
+
+
+
+.data
+Msg1: .asciiz "Enter a Number N : "
+Msg2: .asciiz "\nFirst Fibonacci Number is : 0"
+Msg3: .asciiz "\nNth Fibonacci Number is : "
+Msg4: .asciiz "\nN+1th Fibonacci Number is : "
+
+.text
+.globl main
+
+main:
+
+    # Print Msg1
+    li $v0, 4
+    la $a0, Msg1
+    syscall
+
+    # Take User Input and Store it in $a1
+    li $v0, 5
+    syscall
+    move $a1, $v0
+
+    # Print Msg2
+    li $v0, 4
+    la $a0, Msg2
+    syscall
+
+    # Initalize the required Registers
+    li $t0, 1
+
+    jal Fibonacci
+
+    # Print Msg3
+    li $v0, 4
+    la $a0, Msg3
+    syscall
+
+    # Print Result
+    li $v0, 1
+    move $a0, $v1
+    syscall
+
+    # Safe Exit
+    li $v0, 10
+    syscall
+
+
+
+
+
+Fibonacci:
+    beq $a1, $zero, Return0
+    beq $a1, $t0, Return1
+
+    # Load the Return Address
+    sub $sp, $sp, 4
+    sw $ra, ($sp)
+    sub $a1, $a1, 1
+    jal Fibonacci   #f(n-1)
+    addi $a1, $a1, 1
+
+    lw $ra, ($sp)
+    addi $sp, $sp, 4
+
+    sub $sp, $sp, 4
+    sw $s0, ($sp)
+
+    sub $sp, $sp, 4
+    sw $ra, ($sp)
+
+    sub $a1, $a1, 2
+    jal Fibonacci   #f(n-2)
+    addi $a1, $a1, 2
+
+    lw $ra, ($sp)
+    addi $sp, $sp, 4
+
+    lw $s1, ($sp)
+    addi $sp, $sp, 4
+
+    add $v1, $v1, $s1
+    jr $ra
+
+    Return0:
+        li $v1, 0
+        jr $ra
+    
+    Return1:
+        li $v1, 1
+        jr $ra
+

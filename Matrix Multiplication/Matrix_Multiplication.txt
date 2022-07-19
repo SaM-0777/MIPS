@@ -1,0 +1,198 @@
+# Name : Soumya Ranjan Sahu
+# Roll No : 20BCS126
+
+# Code Description : Matrix Mulitplication
+#                    Matrix A : 2  3         Matrix B : 1  5
+#                               4  2                    6  3
+#
+#                   (Matrix A) x (Matrix B) Output is : 20  19
+#                                                       16  26
+
+# Step - 1 : Define Matrix A and Matrix B in Memory and also Create Space to store the Resultant Matrix
+# Step - 2 : Create and Define all the Messages to be print on console
+# Step - 3 : Print Msg1 on console
+# Step - 4 : Set the Arguments for Sub-Routine "DisplayMatrix" to print the Elements of Matrix A
+#            Arguments are : $a1 contains the Base Address of a Matrix to be print on console
+#                          : $a2 is the Number of Rows in Matrix (In Square Matrix Number of Rows and Columns are equal)
+# Step - 5 : Call the Sub-Routine "DisplayMatrix"
+# DisplayMatrix : 
+#                loopR will print the Elements of same Row
+#                loopC is to increment the Row Counter to jump to the next Row and Again Elements of the Row will be Printed
+# Step - 6 : Print EOL and Msg2 in console
+# Step - 7 : Again Set the Arguments for Sub-Routine "DisplayMatrix" to print the Elements of Matrix B
+#           Now $a1 contains Base Address of Matrix B and $a2 is the Number of Rows of Matrix B
+# Step - 8 : Print EOL and MSg3 on console
+#          And Set the Arguments for the Sub-Routine "MatrixMulitplication"
+#          Arguments : $a1 contains Base Address of Matrix A
+#                      $a2 contains Base Address of Matrix B
+#                      $a3 is 2
+# MatrixMulitplication : 
+#                       loopk : will calculate the Element and store it in MatrixR
+#                       loopj : will increment the Address of Matrix B and Matrix R
+#                       loopi : Intilaize the Counter $t6
+#                               Increment the Base Address of Matrix A to point to the next Row and Initialize $a2 with Base Address of Matrix B
+#                               Increment the Address of Matrix R to store new Element
+# Step - 9 : Display The Resultant Matrix and Exit the Program
+
+
+
+
+
+
+
+
+
+.data
+MatrixA: .word 2, 3, 4, 2
+MatrixB: .word 1, 5, 6, 3
+MatrixR: .space 16
+Msg1: .asciiz "Matrix A : "
+Msg2: .asciiz "Matrix B : "
+EOL: .asciiz "\n"
+Msg3: .asciiz "Resultant Matrix : "
+space: .asciiz " "
+
+.text
+.globl main
+
+main:
+
+    # Print Msg1
+    li $v0, 4
+    la $a0, Msg1
+    syscall
+
+    la $a1, MatrixA
+    li $a2, 2
+
+    jal DisplayMatrix
+
+    # print EOL
+    li $v0, 4
+    la $a0, EOL
+    syscall
+
+    # Print Msg2
+    li $v0, 4
+    la $a0, Msg2
+    syscall
+
+    la $a1, MatrixB
+    li $a2, 2
+    
+    jal DisplayMatrix
+
+    # Print EOL
+    li $v0, 4
+    la $a0, EOL
+    syscall
+
+    # Print Msg3
+    li $v0, 4
+    la $a0, Msg3
+    syscall
+
+    la $a1, MatrixA
+    la $a2, MatrixB
+    li $a3, 2
+
+    jal MatrixMulitplication
+
+    la $a1, MatrixR
+    li $a2, 2
+
+    jal DisplayMatrix
+
+    li $v0, 10
+    syscall
+
+
+DisplayMatrix:
+    # a1, a2, a3
+    # a1 : Matrix Base Address
+    # t0 : Vertices
+    # t1 : Columns
+    li $t0, 0
+    li $t1, 0
+    loopC:
+
+        beq $t0, $a2, ExitF1
+        addi $t0, $t0, 1
+        li $t1, 0
+
+        # Print EOL
+        li $v0, 4
+        la $a0, EOL
+        syscall
+        
+        loopR:
+
+            beq $t1, $a2, loopC
+            lw $t2, ($a1)
+            
+            # Print Element
+            li $v0, 1
+            move $a0, $t2
+            syscall
+            
+            # Print Space
+            li $v0, 4
+            la $a0, space
+            syscall
+            
+            # Increment
+            addi $a1, $a1, 4
+            addi $t1, $t1, 1
+            j loopR
+    
+    ExitF1:
+        jr $ra
+
+
+MatrixMulitplication:
+
+    # a1 : B.A MatrixA
+    # a2 : B.A MatrixB
+    # a3 : Degree of Matrix i.e. 2
+
+    li $t1, 0   # i
+    li $t2, 0   # j
+    li $t6, 0   # k
+
+    li $v1, 0
+    la $s1, MatrixR
+    li $t6, 0
+
+    loopk:
+        addi $t6, $t6, 1
+        lw $t4, ($a1)
+        lw $t5, ($a2)
+        mul $s0, $t4, $t5
+        add $v1, $v1, $s0
+        lw $t4, 4($a1)
+        lw $t5, 8($a2)
+        mul $s0, $t4, $t5
+        add $v1, $v1, $s0
+        sw $v1, ($s1)
+        beq $t6, $a3, loopi
+        j loopj
+
+    loopj:
+        add $a2, $a2, 4
+        add $s1, $s1, 4
+        li $v1, 0
+        j loopk
+
+    loopi:
+        li $t6, 0
+        addi $t1, $t1, 1
+        add $a1, $a1, 8
+        la $a2, MatrixB
+        addi $s1, $s1, 4
+        li $v1, 0
+        beq $t1, $a3, ExitF2
+        j loopk
+
+    ExitF2:
+        jr $ra
+

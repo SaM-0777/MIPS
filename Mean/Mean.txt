@@ -1,0 +1,105 @@
+# Name : Soumya Ranjan Sahu
+# Roll No : 20BCS126
+
+# Code Desription : Array : 10, 20, 15, 30, 25, 75, 5, 60, 40, 100
+#                   Sum : 380
+#                   Average (Output) : 30
+
+# Step - 1 : Print Msg1 in Console
+# Step - 2 : Initialize the required Registers for Operations
+# Step - 3 : Jump and Link to Traverse (Call the Sub-Routine Traverse)
+# Traverse Subroutine : Load the Base Address of Array in $t4
+#                       Tloop will Traverse and Print Element one by one
+#                       load the content of Address in $t4 to $t5
+#                       branch if $t5 has a null Element
+#                       if not Print the Element on console and increment the counter and Array Address to point the next Element in Array
+# Step - 4 : Set the Argument for Sum Sub-Routine in $a1 and $a2 and Call the Sub-Routine Sum
+# Sum Sub-Routine : Sloop will Traverse the Elements of Array and add it with $v1 and return it to main function
+# Step - 5 : Calculate the Mean by dividing sum and total Elements i.e. divide $v1 with $t1
+# Step - 6 : Print Msg2 and the result in Console
+
+
+.data
+Array: .word 10, 20, 15, 30, 25, 75, 5, 60, 40, 100
+Msg1: .asciiz "Array : "
+Msg2: .asciiz "\nMean is : "
+space: .asciiz ", "
+
+.text
+.globl main
+
+main:
+
+    li $v0, 4
+    la $a0, Msg1
+    syscall
+
+    # Initialize the Registers
+    li $t0, 0   # Counter
+    li $t1, 10   # Array length
+    li $t2, 0   # Mean
+
+    jal Traverse
+
+
+    # Set the Arguments for the Sub-Routine
+    la $a1, Array   # Base Address of Array
+    move $a2, $t1   # Counter
+
+    jal Sum
+
+    # Calculate the Mean
+    div $v1, $v1, $t1
+
+    # Print Message
+    li $v0, 4
+    la $a0, Msg2
+    syscall
+
+    # Print Mean
+    li $v0, 1
+    move $a0, $v1
+    syscall
+
+    # Safe Exit
+    li $v0, 10
+    syscall
+
+
+
+# loop to Traverse the Array and Print elements one by one
+Traverse:
+    la $t4, Array
+
+    Tloop:
+        lw $t5, ($t4)
+        beq $t0, $t1, exit
+
+        # Print the Element
+        li $v0, 1
+        move $a0, $t5
+        syscall
+
+        # Print Space
+        li $v0, 4
+        la $a0, space
+        syscall
+
+        addi $t4, $t4, 4
+        addi $t0, $t0, 1
+        j Tloop
+    
+    exit:
+        jr $ra
+
+Sum:
+    Sloop:
+        beq $a2, $zero, end
+        lw $t3, ($a1)
+        add $v1, $v1, $t3
+        addi $a1, $a1, 4
+        sub $a2, $a2, 1
+        j Sloop
+    
+    end:
+        jr $ra

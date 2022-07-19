@@ -1,0 +1,9 @@
+.text
+.globl main
+
+main:
+    li $t0, 100
+    li $t1, 50
+    add $t2, $t1, $t0
+    li $v0, 10
+    syscall
